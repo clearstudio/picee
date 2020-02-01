@@ -259,12 +259,12 @@ new Vue({
           this.uploadProgress = 0
         }, 2000)
 
-        this.imgLink = result.data.content.download_url
+        this.imgLink = `https://cdn.jsdelivr.net/gh/${this.repoName}/${this.folderPath}/${result.data.content.name}`
         this.uploaderFocus = false
 
         this.uploadHistory.unshift({
           time: (new Date()).toLocaleString(),
-          imgLink: result.data.content.download_url
+          imgLink: `https://cdn.jsdelivr.net/gh/${this.repoName}/${this.folderPath}/${result.data.content.name}`
         })
 
         localStorage.setItem('picee_history', JSON.stringify(this.uploadHistory))
