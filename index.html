@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Picee">
+  <link rel="apple-touch-icon" href="images/icons/152x152.png">
+  <meta name="msapplication-TileImage" content="images/icon/144x144.png">
+  <meta name="msapplication-TileColor" content="#2F3BA2">
   <title>Picee | Using github as your image hosting service</title>
-  <link rel="shortcut icon" href="images/logo.png">
+  <link rel="shortcut icon" href="images/icons/icon-512x512.png">
   <link rel="stylesheet" href="style/element-ui.css">
   <link rel="stylesheet" href="style/main.css">
+  <link rel="manifest" href="/manifest.json">
+
 </head>
+
 <body>
   <div id="app" @click="onUploaderFocus">
     <!-- Auth start -->
     <div class="auth" v-if="loginMode">
       <div class="auth-methods">
-        <span class="auth-methods-token" :class="{active: authMode === 'token'}" @click="changeAuthMode('token')">Access token</span>
-        <span class="auth-methods-account" :class="{active: authMode === 'account'}" @click="changeAuthMode('account')">Account & Password</span>
+        <span class="auth-methods-token" :class="{active: authMode === 'token'}" @click="changeAuthMode('token')">Access
+          token</span>
+        <span class="auth-methods-account" :class="{active: authMode === 'account'}"
+          @click="changeAuthMode('account')">Account & Password</span>
       </div>
-  
+
       <el-form v-if="authMode === 'token'" label-position="left" label-width="80px" class="auth-input">
         <el-form-item>
           <el-input v-model="githubToken"></el-input>
@@ -31,7 +43,7 @@
           <el-button type="primary" @click="submitAuth" :disabled="!githubToken">Auth</el-button>
         </el-form-item>
       </el-form>
-  
+
       <el-form v-if="authMode === 'account'" label-position="left" label-width="80px" class="auth-input">
         <el-form-item label="Account">
           <el-input v-model="githubAccount"></el-input>
@@ -49,7 +61,8 @@
 
     <!-- Upload start -->
     <div class="upload" v-if="!loginMode && !historyMode">
-      <el-progress v-show="uploadProgress" class="upload-progress" :show-text="false" :stroke-width="6" :percentage="uploadProgress"></el-progress>
+      <el-progress v-show="uploadProgress" class="upload-progress" :show-text="false" :stroke-width="6"
+        :percentage="uploadProgress"></el-progress>
 
       <div class="upload-project">
         <el-tooltip content="eg. Username/Reponame">
@@ -65,7 +78,8 @@
         </el-tooltip>
       </div>
 
-      <div v-if="isRepoNameCorrect" @dragover.prevent @drop.stop.prevent="onDrop" class="upload-area target" :class="{'focus': uploaderFocus}" @paste="onPaste">
+      <div v-if="isRepoNameCorrect" @dragover.prevent @drop.stop.prevent="onDrop" class="upload-area target"
+        :class="{'focus': uploaderFocus}" @paste="onPaste">
         <label class="target" v-if="uploaderFocus" for="uploader"></label>
         <input id="uploader" @change="onFileChange" type="file">
         <h3 v-if="!previewImg">Select, paste or drag an image here</h3>
@@ -73,7 +87,8 @@
       </div>
 
       <div class="upload-link" v-if="isRepoNameCorrect">
-        <el-input ref="imgLink" size="mini" readonly :value="copyAsMarkdown ? `![image](${imgLink})` : imgLink"></el-input>
+        <el-input ref="imgLink" size="mini" readonly :value="copyAsMarkdown ? `![image](${imgLink})` : imgLink">
+        </el-input>
         <el-tooltip content="Copy to clipboard">
           <el-button size="mini" :disabled="!imgLink" @click="copyUrl">
             <i class="el-icon-document-copy"></i>
@@ -93,7 +108,8 @@
                 <img :src="item.imgLink">
               </a>
               <div class="history-detail-link">
-                <el-input :ref="`imgLink_${index}`" :value="copyAsMarkdown ? `![image](${item.imgLink})` : item.imgLink" readonly size="mini"></el-input>
+                <el-input :ref="`imgLink_${index}`" :value="copyAsMarkdown ? `![image](${item.imgLink})` : item.imgLink"
+                  readonly size="mini"></el-input>
                 <el-tooltip content="Copy to clipboard">
                   <el-button size="mini" @click="copyUrl($event, `imgLink_${index}`)">
                     <i class="el-icon-document-copy"></i>
@@ -117,11 +133,20 @@
           <i class="tools-btn el-icon-time" :disabled="!uploadHistory.length" @click="historyMode = !historyMode"></i>
         </el-tooltip>
         <div v-if="showConfig" class="tools-config-items">
-          <h5><el-checkbox class="checkbox" v-model="autoUpload">Auto upload</el-checkbox></h5>
-          <h5><el-checkbox class="checkbox" v-model="renameWithHash">Rename the image with a hash</el-checkbox></h5>
-          <h5><el-checkbox class="checkbox" v-model="copyAsMarkdown">Copy url as markdown format</el-checkbox></h5>
-          <h5><el-checkbox class="checkbox" v-model="setMaxSize">Image max size (kb)</el-checkbox></h5>
-          <el-input-number :disabled="!setMaxSize" size="mini" :min="200" v-model="compressSize" :step="100"></el-input-number>
+          <h5>
+            <el-checkbox class="checkbox" v-model="autoUpload">Auto upload</el-checkbox>
+          </h5>
+          <h5>
+            <el-checkbox class="checkbox" v-model="renameWithHash">Rename the image with a hash</el-checkbox>
+          </h5>
+          <h5>
+            <el-checkbox class="checkbox" v-model="copyAsMarkdown">Copy url as markdown format</el-checkbox>
+          </h5>
+          <h5>
+            <el-checkbox class="checkbox" v-model="setMaxSize">Image max size (kb)</el-checkbox>
+          </h5>
+          <el-input-number :disabled="!setMaxSize" size="mini" :min="200" v-model="compressSize" :step="100">
+          </el-input-number>
         </div>
       </div>
 
@@ -144,5 +169,21 @@
   <script src="js/vue.min.js"></script>
   <script src="js/element-ui.js"></script>
   <script type="module" src="js/main.js"></script>
+  <script type="text/javascript">
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(function (registration) {
+            // 注册成功
+            console.log('ServiceWorker registration successful with scope: ', registration.scope)
+          })
+          .catch(function (err) {
+            // 注册失败:(
+            console.log('ServiceWorker registration failed: ', err)
+          })
+      })
+    }
+  </script>
 </body>
+
 </html>
