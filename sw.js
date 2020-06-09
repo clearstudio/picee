@@ -1,58 +1,56 @@
-let cacheName = 'picee-cache';
-
-let assetsfile = [
+const cacheName = 'picee-pwa-0.0.1';
+// 在这个数组里面写入您主页加载需要的资源文件
+const filesToCache = [
     '/',
-    '/index.html',
-    '/manifest.json'
-]
+    './index.html',
+    './js/chooseImg.js',
+    './js/element-ui.js',
+    './js/fetch.js',
+    './js/main.js',
+    './js/paste.js',
+    './js/vue.min.js',
+    './style/fonts/element-icons.ttf',
+    './style/fonts/element-icons.woff',
+    './style/element-ui.css',
+    './style/main.css',
+    './manifest.json',
+];
 
-self.addEventListener('install', function (e) {
-    caches.open(cacheName).then(function (cache) {
-        console.log('sw install');
-        return cache.addAll(assetsfile);
-    })
-    // e.waitUntil(self.skipWaiting());
+self.addEventListener('install', e => {
+    e.waitUntil(
+        caches.open(cacheName).then(cache => {
+            return cache.addAll(filesToCache)
+                .then(() => self.skipWaiting());
+        })
+    );
 });
 
-// 更新缓存
 self.addEventListener('activate', function (e) {
-    e.waitUntil(self.clients.claim());
+    console.log('[ServiceWorker] Activate');
+    e.waitUntil(
+        caches.keys().then(function (keyList) {
+            return Promise.all(keyList.map(function (key) {
+                if (key !== cacheName) {
+                    // 清理旧版本
+                    console.log('[ServiceWorker] Removing old cache', key);
+                    return caches.delete(key);
+                }
+            }));
+        })
+    );
+    // 更新客户端
+    return self.clients.claim();
 });
 
-self.addEventListener('fetch', (e) => {
-    if (/\.jpg$|.png$|.js$|.map$/.test(e.request.url) && e.request.url.indexOf('hot-update.js') === -1) {
-        console.log(e.request.url);
-        e.respondWith(
-            caches.match(e.request).then(function (response) {
-                let requestToCache = e.request.clone();
-                if (response) {
-                    fetch(requestToCache).then((res) => {
-                        if (res && res.status === 200) {
-                            caches.open(cacheName).then(function (cache) {
-                                cache.delete(requestToCache);
-                                cache.put(requestToCache, res.clone());
-                            });
-                        }
-                    });
-                    return response;
-                }
-
-                return fetch(requestToCache).then((res) => {
-                    if (!res || res.status !== 200) {
-                        return res;
-                    }
-                    var responseToCache = res.clone();
-                    caches.open(cacheName).then(function (cache) {
-                        cache.put(requestToCache, responseToCache);
-                    });
-                    return res;
-                });
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.open(cacheName)
+            .then(cache => cache.match(event.request, { ignoreSearch: true }))
+            .then(response => {
+                // 使用缓存而不是进行网络请求，实现app秒开
+                return response || fetch(event.request);
             })
-        );
-    } else {
-        console.log(e.request.url)
-        return fetch(e.request);
-    }
+    );
 });
 
 // 监听推送事件 然后显示通知
@@ -62,8 +60,8 @@ self.addEventListener('push', function (event) {
     const title = 'Push Codelab';
     const options = {
         body: 'Yay it works.',
-        icon: 'img/48.png',
-        badge: 'img/48.png'
+        icon: '/images/icons/icon-512×512.png',
+        badge: '/images/icons/icon-512×512.png'
     };
     event.waitUntil(self.registration.showNotification(title, options));
 });
@@ -77,4 +75,4 @@ self.addEventListener('notificationclick', function (event) {
     event.waitUntil(
         clients.openWindow('https://developers.google.com/web/') // eslint-disable-line
     );
-});
+}); 
