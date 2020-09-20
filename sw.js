@@ -14,6 +14,8 @@ const filesToCache = [
     './style/element-ui.css',
     './style/main.css',
     './manifest.json',
+    './images/icons/icon-144x144.png',
+    './images/icons/icon-512x512.png'
 ];
 
 self.addEventListener('install', e => {
