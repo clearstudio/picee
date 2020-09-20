@@ -1,4 +1,4 @@
-const cacheName = 'picee-pwa-0.0.1';
+const cacheName = 'picee-pwa-0.0.2';
 // 在这个数组里面写入您主页加载需要的资源文件
 const filesToCache = [
     '/',

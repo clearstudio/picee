@@ -50,8 +50,8 @@ body {
 }
 .upload-progress {
   position: absolute;
-  left: -10px;
-  right: -10px;
+  left: 0;
+  right: 0;
   top: 0;
 }
 .upload-project {
