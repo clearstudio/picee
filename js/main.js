@@ -259,12 +259,12 @@ new Vue({
           this.uploadProgress = 0
         }, 2000)
 
-        this.imgLink = `https://cdn.jsdelivr.net/gh/${this.repoName}/${this.folderPath}/${result.data.content.name}`
+        this.imgLink = `https://fastly.jsdelivr.net/gh/${this.repoName}/${this.folderPath}/${result.data.content.name}`
         this.uploaderFocus = false
 
         this.uploadHistory.unshift({
           time: (new Date()).toLocaleString(),
-          imgLink: `https://cdn.jsdelivr.net/gh/${this.repoName}/${this.folderPath}/${result.data.content.name}`
+          imgLink: `https://fastly.jsdelivr.net/gh/${this.repoName}/${this.folderPath}/${result.data.content.name}`
         })
 
         localStorage.setItem('picee_history', JSON.stringify(this.uploadHistory))
